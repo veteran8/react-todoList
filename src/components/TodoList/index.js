@@ -4,7 +4,14 @@ import TodoItem from "./TodoItem";
 
 export default class index extends Component {
   static propTypes = {
-    todos: PropTypes.array
+    todos: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        title: PropTypes.string.isRequired,
+        completed: PropTypes.bool.isRequired
+      })
+    ).isRequired,
+    onCompletedChange: PropTypes.func.isRequired
   };
 
   render() {
@@ -12,7 +19,13 @@ export default class index extends Component {
       <div>
         <ul>
           {this.props.todos.map(todo => {
-            return <TodoItem key={todo.id} {...todo} />;
+            return (
+              <TodoItem
+                key={todo.id}
+                {...todo}
+                onCompletedChange={this.props.onCompletedChange}
+              />
+            );
           })}
         </ul>
       </div>
