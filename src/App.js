@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import { TodoHeader, TodoInput, TodoList } from "./components/index";
+import { getTodos } from "./service";
+
 export default class app extends Component {
   constructor() {
     super();
     this.state = {
       title: "待办事项列表",
       desc: "今日事今日毕",
-      todos: [
-        { title: "吃饭", completed: false, id: 1 },
-        { title: "睡觉", completed: true, id: 2 }
-      ]
+      todos: [],
+      isLoading: true
     };
   }
   addTodo = todoTitle => {
@@ -34,15 +34,49 @@ export default class app extends Component {
       };
     });
   };
+  getData = () => {
+    getTodos()
+      .then(res => {
+        this.setState({
+          isLoading: true
+        });
+        console.log(res, 999);
+        if (res.status === 200) {
+          this.setState({
+            todos: res.data
+          });
+        } else {
+          //错误处理
+        }
+      })
+      .catch(err => {
+        console.log(err, "err");
+      })
+      .finally(() => {
+        this.setState({
+          isLoading: false
+        });
+      });
+  };
+  componentDidMount() {
+    setTimeout(() => {
+      this.getData();
+    }, 2000);
+  }
+
   render() {
     return (
       <div>
         <TodoHeader title={this.state.title} />
         <TodoInput addTodo={this.addTodo} />
-        <TodoList
-          onCompletedChange={this.onCompletedChange}
-          todos={this.state.todos}
-        />
+        {this.state.isLoading ? (
+          <div>loading</div>
+        ) : (
+          <TodoList
+            onCompletedChange={this.onCompletedChange}
+            todos={this.state.todos}
+          />
+        )}
       </div>
     );
   }
