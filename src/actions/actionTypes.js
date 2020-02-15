@@ -1,0 +1,4 @@
+export default {
+  GET_LIST: "GET_LIST",
+  CHANGE_TODO_STATE: "CHANGE_TODO_STATE"
+};

@@ -1,15 +1,16 @@
 import React, { Component } from "react";
 import { TodoHeader, TodoInput, TodoList } from "./components/index";
-import { getTodos } from "./service";
+import { connect } from "react-redux";
+import { getData, changeState } from "./actions/todo";
 
-export default class app extends Component {
+class app extends Component {
   constructor() {
     super();
     this.state = {
       title: "待办事项列表",
       desc: "今日事今日毕",
       todos: [],
-      isLoading: true
+      isLoading: false
     };
   }
   addTodo = todoTitle => {
@@ -23,45 +24,12 @@ export default class app extends Component {
     });
   };
   onCompletedChange = id => {
-    this.setState(prevState => {
-      return {
-        todos: prevState.todos.map(todo => {
-          if (todo.id === id) {
-            todo.completed = !todo.completed;
-          }
-          return todo;
-        })
-      };
-    });
+    this.props.changeState(id);
   };
-  getData = () => {
-    getTodos()
-      .then(res => {
-        this.setState({
-          isLoading: true
-        });
-        console.log(res, 999);
-        if (res.status === 200) {
-          this.setState({
-            todos: res.data
-          });
-        } else {
-          //错误处理
-        }
-      })
-      .catch(err => {
-        console.log(err, "err");
-      })
-      .finally(() => {
-        this.setState({
-          isLoading: false
-        });
-      });
-  };
+
   componentDidMount() {
-    setTimeout(() => {
-      this.getData();
-    }, 2000);
+    console.log(this.props, 666);
+    this.props.getData();
   }
 
   render() {
@@ -74,10 +42,18 @@ export default class app extends Component {
         ) : (
           <TodoList
             onCompletedChange={this.onCompletedChange}
-            todos={this.state.todos}
+            todos={this.props.list}
           />
         )}
       </div>
     );
   }
 }
+const mapStateToProps = state => {
+  console.log("state", state);
+  return {
+    list: state.todo.list
+  };
+};
+
+export default connect(mapStateToProps, { getData, changeState })(app);

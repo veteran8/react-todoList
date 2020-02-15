@@ -10,23 +10,24 @@ export default class index extends Component {
         title: PropTypes.string.isRequired,
         completed: PropTypes.bool.isRequired
       })
-    ).isRequired,
-    onCompletedChange: PropTypes.func.isRequired
+    ),
+    onCompletedChange: PropTypes.func
   };
 
   render() {
     return (
       <div>
         <ul>
-          {this.props.todos.map(todo => {
-            return (
-              <TodoItem
-                key={todo.id}
-                {...todo}
-                onCompletedChange={this.props.onCompletedChange}
-              />
-            );
-          })}
+          {this.props.todos &&
+            this.props.todos.map(todo => {
+              return (
+                <TodoItem
+                  key={todo.id}
+                  {...todo}
+                  onCompletedChange={this.props.onCompletedChange}
+                />
+              );
+            })}
         </ul>
       </div>
     );
